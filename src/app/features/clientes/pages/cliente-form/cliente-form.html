@@ -1,0 +1,73 @@
+<section class="page">
+  <h2>{{ esEdicion() ? 'Editar cliente' : 'Nuevo cliente' }}</h2>
+  @if (error()) {
+    <div class="alerta" role="alert">{{ error() }}</div>
+  }
+  @if (cargando()) {
+    <p role="status">Cargando datos…</p>
+  }
+  <form [formGroup]="form" (ngSubmit)="guardar()" class="card formulario">
+    <fieldset [disabled]="guardando() || cargando() || !disponible()">
+      <label>DNI<input class="input" type="text" formControlName="dni" /></label>
+      @if (form.controls.dni.touched && form.controls.dni.invalid) {
+        <small class="error">DNI: exactamente 8 dígitos.</small>
+      }
+      @if (erroresServidor()['dni']; as mensaje) {
+        <small class="error">{{ mensaje }}</small>
+      }
+      <label>Nombres<input class="input" type="text" formControlName="nombres" /></label>
+      @if (form.controls.nombres.touched && form.controls.nombres.invalid) {
+        <small class="error">Nombres: entre 2 y 100 caracteres.</small>
+      }
+      @if (erroresServidor()['nombres']; as mensaje) {
+        <small class="error">{{ mensaje }}</small>
+      }
+      <label>Apellidos<input class="input" type="text" formControlName="apellidos" /></label>
+      @if (form.controls.apellidos.touched && form.controls.apellidos.invalid) {
+        <small class="error">Apellidos: entre 2 y 100 caracteres.</small>
+      }
+      @if (erroresServidor()['apellidos']; as mensaje) {
+        <small class="error">{{ mensaje }}</small>
+      }
+      <label>Correo electrónico<input class="input" type="email" formControlName="email" /></label>
+      @if (form.controls.email.touched && form.controls.email.invalid) {
+        <small class="error"
+          >Correo electrónico: ingrese un correo válido (máximo 150 caracteres).</small
+        >
+      }
+      @if (erroresServidor()['email']; as mensaje) {
+        <small class="error">{{ mensaje }}</small>
+      }
+      <label>Teléfono<input class="input" type="text" formControlName="telefono" /></label>
+      @if (form.controls.telefono.touched && form.controls.telefono.invalid) {
+        <small class="error">Teléfono: 9 dígitos o vacío.</small>
+      }
+      @if (erroresServidor()['telefono']; as mensaje) {
+        <small class="error">{{ mensaje }}</small>
+      }
+      <label
+        >Dirección<textarea class="input" rows="3" formControlName="direccion"></textarea>
+      </label>
+      @if (form.controls.direccion.touched && form.controls.direccion.invalid) {
+        <small class="error">Dirección: máximo 250 caracteres.</small>
+      }
+      @if (erroresServidor()['direccion']; as mensaje) {
+        <small class="error">{{ mensaje }}</small>
+      }
+      <label class="check"><input type="checkbox" formControlName="estado" /> Activo</label>
+      @if (erroresServidor()['estado']; as mensaje) {
+        <small class="error">{{ mensaje }}</small>
+      }
+    </fieldset>
+    <div class="acciones">
+      <a routerLink="/clientes" class="btn">Cancelar</a>
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="guardando() || cargando() || !disponible()"
+      >
+        {{ guardando() ? 'Guardando…' : esEdicion() ? 'Actualizar' : 'Registrar' }}
+      </button>
+    </div>
+  </form>
+</section>

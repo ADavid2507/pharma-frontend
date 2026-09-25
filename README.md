@@ -1,59 +1,65 @@
-# PharmaFrontend
+# PharmaSoft - práctica LP2, sesión 7
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.0.
+SPA Angular 22 con los retos de Categorías y Clientes. Código organizado en `core`, `shared`, `layout` y `features`.
 
-## Development server
+## Ejecutar
 
-To start a local development server, run:
+Desde esta carpeta, con Node 24 LTS y npm disponibles:
 
-```bash
-ng serve
+```powershell
+npm install
+npm start
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Abrir **http://localhost:4200**. Iniciar PharmaBackend y Oracle por separado. La API se configura en `src/environments/environment.ts` y `environment.development.ts`: `http://localhost:8080/api/v1`.
 
-## Code scaffolding
+Si npm no está en PATH pero las dependencias ya están instaladas:
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```powershell
+node node_modules/@angular/cli/bin/ng.js serve
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Verificar
 
-```bash
-ng generate --help
+```powershell
+npm run build
+npm test -- --watch=false
 ```
 
-## Building
+Comandos equivalentes sin npm:
 
-To build the project run:
-
-```bash
-ng build
+```powershell
+node node_modules/@angular/cli/bin/ng.js build
+node node_modules/@angular/cli/bin/ng.js test --watch=false
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Resultado de la revisión del 24/09/2026: compilación correcta; 41 pruebas automatizadas aprobadas. HTTP se simula en las pruebas unitarias; no prueban Oracle ni CORS. Se comprobó en Edge la navegación, menú, 404, validación sin POST y error de conexión. Las capturas están en `output/evidencias`.
 
-## Running unit tests
+## Organización
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+- `core/config/menu.ts`: menú único para Inicio, Categorías y Clientes.
+- `core/models` y `core/utils`: contrato de errores y traducción de respuestas HTTP.
+- `layout`: Header emite el evento del menú; MainLayout mantiene su estado y aloja RouterOutlet; Sidebar recorre MENU.
+- `shared/pages/no-encontrado`: página 404.
+- `features/categorias` y `features/clientes`: modelos, servicio HTTP, listado, formulario y rutas propias.
+- `app.config.ts`: registra HttpClient, Router y enlace de parámetros a inputs.
+- `app.routes.ts`: MainLayout como padre, inicio y features diferidas, redirección inicial y comodín 404.
 
-```bash
-ng test
-```
+Los listados usan signals para datos/carga/error y computed para filtrar sin nuevas peticiones. Los formularios reactivos comparten registro y edición, reciben `id` desde la ruta, validan valores recortados, muestran errores del servidor y evitan envíos duplicados. Un error al precargar impide guardar un formulario incompleto.
 
-## Running end-to-end tests
+## Contrato real del backend local
 
-For end-to-end (e2e) testing, run:
+La guía ilustra `Categoria.id` y nombres de 3 a 50 caracteres. **Tu backend local devuelve `id_categoria` y admite de 3 a 30**. El frontend sigue sus DTO; no se modificó PharmaBackend.
 
-```bash
-ng e2e
-```
+Clientes: DNI de 8 dígitos; nombres/apellidos de 2 a 100; correo obligatorio válido hasta 150; teléfono opcional de 9 dígitos; dirección opcional hasta 250. Los opcionales vacíos se envían como null. Categorías: descripción opcional hasta 200. Ambos tienen estado booleano.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Cada servicio concentra GET colección, GET por ID, POST, PUT por ID y DELETE por ID. Se muestran los mensajes del backend, incluidos 400, 404 y 409, y un mensaje comprensible para status 0.
 
-## Additional Resources
+## Pendientes para entregar
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+1. Mantener PharmaBackend con Oracle iniciado en el puerto 8080. La conexión de Categorías y Clientes devolvió HTTP 200 y CORS autorizó http://localhost:4200 tras corregir la URL del frontend.
+2. Realizar las doce pruebas del paso 11; completar capturas con F12 > Red en las que corresponda. Consultar `output/PLAN_DE_EVIDENCIAS.md`.
+3. Completar apellido y datos del estudiante en el informe. El PDF actual contiene evidencias parciales y no sustituye las doce capturas exigidas.
+4. Crear la rama solicitada por el docente, registrar al menos cuatro commits y publicar en tu repositorio. No hay remoto Git configurado; no se han creado commits ni publicado cambios.
+
+No es necesario repetir `git init`: el proyecto ya tiene repositorio. Conviene separar commits de configuración/layout, Categorías, Clientes y pruebas/documentación. Agregar explícitamente archivos nuevos antes de cada commit.
