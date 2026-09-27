@@ -12,7 +12,7 @@
   <input
     class="input buscador"
     aria-label="Buscar clientes"
-    placeholder="Buscar por DNI, nombres o apellidos"
+    placeholder="Buscar en esta página por DNI o nombre"
     [value]="filtro()"
     (input)="filtro.set($any($event.target).value)"
   />
@@ -25,8 +25,29 @@
     <table class="tabla">
       <thead>
         <tr>
-          <th>DNI</th>
-          <th>Nombres y apellidos</th>
+          <th
+            [attr.aria-sort]="
+              ordenarPor() === 'dni' ? (direccion() === 'asc' ? 'ascending' : 'descending') : 'none'
+            "
+          >
+            <button class="orden" (click)="ordenar('dni')" [disabled]="eliminando() !== null">
+              DNI {{ ordenarPor() === 'dni' ? (direccion() === 'asc' ? '↑' : '↓') : '' }}
+            </button>
+          </th>
+          <th
+            [attr.aria-sort]="
+              ordenarPor() === 'apellidos'
+                ? direccion() === 'asc'
+                  ? 'ascending'
+                  : 'descending'
+                : 'none'
+            "
+          >
+            <button class="orden" (click)="ordenar('apellidos')" [disabled]="eliminando() !== null">
+              Apellidos y nombres
+              {{ ordenarPor() === 'apellidos' ? (direccion() === 'asc' ? '↑' : '↓') : '' }}
+            </button>
+          </th>
           <th>Correo</th>
           <th>Teléfono</th>
           <th>Estado</th>
@@ -37,7 +58,7 @@
         @for (c of filtradas(); track c.id) {
           <tr>
             <td>{{ c.dni }}</td>
-            <td>{{ c.nombres }} {{ c.apellidos }}</td>
+            <td>{{ c.apellidos }} {{ c.nombres }}</td>
             <td>{{ c.email }}</td>
             <td>{{ c.telefono ?? '—' }}</td>
             <td>
@@ -53,7 +74,7 @@
                 [disabled]="eliminando() !== null"
                 (click)="eliminar(c)"
               >
-                Eliminar
+                Dar de baja
               </button>
             </td>
           </tr>
@@ -65,4 +86,36 @@
       </tbody>
     </table>
   }
+  <nav class="paginacion" aria-label="Paginación de clientes">
+    <label
+      >Clientes por página
+      <select
+        [value]="tamanio()"
+        (change)="cambiarTamanio($any($event.target).value)"
+        [disabled]="cargando() || eliminando() !== null"
+      >
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+      </select>
+    </label>
+    <span aria-live="polite"
+      >Página {{ totalPaginas() === 0 ? 0 : pagina() + 1 }} de {{ totalPaginas() }} ·
+      {{ totalElementos() }} clientes</span
+    >
+    <button
+      class="btn"
+      (click)="cambiarPagina(-1)"
+      [disabled]="cargando() || eliminando() !== null || pagina() === 0"
+    >
+      Anterior
+    </button>
+    <button
+      class="btn"
+      (click)="cambiarPagina(1)"
+      [disabled]="cargando() || eliminando() !== null || ultima()"
+    >
+      Siguiente
+    </button>
+  </nav>
 </section>

@@ -26,8 +26,21 @@ describe('ClienteService contract', () => {
   });
   afterEach(() => http.verify());
   it('lists backend records', () => {
-    service.listar().subscribe((data) => expect(data).toEqual([record]));
-    http.expectOne({ url, method: 'GET' }).flush([record]);
+    const pagina = {
+      contenido: [record],
+      pagina: 0,
+      tamanio: 10,
+      totalElementos: 1,
+      totalPaginas: 1,
+      ultima: true,
+    };
+    service.listar().subscribe((data) => expect(data).toEqual(pagina));
+    const req = http.expectOne((req) => req.url === url && req.method === 'GET');
+    expect(req.request.params.get('pagina')).toBe('0');
+    expect(req.request.params.get('tamanio')).toBe('10');
+    expect(req.request.params.get('ordenarPor')).toBe('apellidos');
+    expect(req.request.params.get('direccion')).toBe('asc');
+    req.flush(pagina);
   });
   it('loads by ID', () => {
     service.obtener(7).subscribe((data) => expect(data.id).toBe(7));
