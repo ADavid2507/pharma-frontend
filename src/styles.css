@@ -32,6 +32,7 @@ h2 {
 .btn {
   display: inline-block;
   padding: 8px 14px;
+  margin: 4px;
   border: 1px solid #cbd5e1;
   border-radius: 8px;
   background: #fff;
@@ -44,11 +45,19 @@ h2 {
   background: #0f2e5c;
   border-color: #0f2e5c;
   color: #fff;
+  transition: all 0.2s;
 }
 .btn-peligro {
   border-color: #b42318;
   color: #b42318;
+  transition: all 0.2s;
 }
+
+.btn-peligro:hover {
+  background: #b42318;
+  color: #fff;
+}
+
 .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
@@ -107,6 +116,7 @@ fieldset {
 }
 .page {
   overflow-x: auto;
+  padding: 16px;
 }
 .area-main {
   min-width: 0;
