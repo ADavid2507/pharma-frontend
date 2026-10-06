@@ -12,9 +12,12 @@
         [value]="categoriaFiltro() ?? ''"
         (change)="filtrarPorCategoria($any($event.target).value)"
       >
-        <option value="">Todas</option>
+        <option value="" [selected]="categoriaFiltro() === null">Todas</option>
+        @if (categoriaFiltro() !== null && !categoriaDisponible()) {
+          <option [value]="categoriaFiltro()" [selected]="true">{{ nombreCategoria() }} (no disponible)</option>
+        }
         @for (c of categorias(); track c.id_categoria) {
-          <option [value]="c.id_categoria">{{ c.nombre }}</option>
+          <option [value]="c.id_categoria" [selected]="categoriaFiltro() === c.id_categoria">{{ c.nombre }}</option>
         }
       </select>
     </label>
@@ -30,11 +33,21 @@
         <option value="5">5</option>
         <option value="10">10</option>
         <option value="20">20</option>
+        <option value="100">100</option>
       </select>
     </label>
   </div>
 
-  <p class="nota">El filtro por categoría se aplica a la página actual.</p>
+  @if (avisoRuta()) {
+    <p class="alerta" role="alert">{{ avisoRuta() }}</p>
+  }
+  @if (primeraCentena()) {
+    <p class="nota" role="status">
+      Mostrando productos de la categoría {{ nombreCategoria() }} en los primeros 100 registros.
+    </p>
+  } @else {
+    <p class="nota">El filtro por categoría se aplica a la página actual.</p>
+  }
 
   @if (errorCategorias()) {
     <div class="alerta" role="alert">
@@ -44,12 +57,7 @@
 
   @if (error()) {
     <div class="alerta" role="alert">{{ error() }}</div>
-    <button
-      type="button"
-      class="btn"
-      [disabled]="ocupado()"
-      (click)="cargar()"
-    >
+    <button type="button" class="btn" [disabled]="ocupado()" (click)="cargar()">
       Recargar listado
     </button>
   }
@@ -61,16 +69,15 @@
       <thead>
         <tr>
           <th
-            [attr.aria-sort]="ordenarPor() === 'nombre'
-              ? (direccion() === 'asc' ? 'ascending' : 'descending')
-              : 'none'"
+            [attr.aria-sort]="
+              ordenarPor() === 'nombre'
+                ? direccion() === 'asc'
+                  ? 'ascending'
+                  : 'descending'
+                : 'none'
+            "
           >
-            <button
-              type="button"
-              class="orden"
-              [disabled]="ocupado()"
-              (click)="ordenar('nombre')"
-            >
+            <button type="button" class="orden" [disabled]="ocupado()" (click)="ordenar('nombre')">
               Nombre
               {{ ordenarPor() === 'nombre' ? (direccion() === 'asc' ? '↑' : '↓') : '' }}
             </button>
@@ -79,32 +86,30 @@
           <th>Categoría</th>
 
           <th
-            [attr.aria-sort]="ordenarPor() === 'precio'
-              ? (direccion() === 'asc' ? 'ascending' : 'descending')
-              : 'none'"
+            [attr.aria-sort]="
+              ordenarPor() === 'precio'
+                ? direccion() === 'asc'
+                  ? 'ascending'
+                  : 'descending'
+                : 'none'
+            "
           >
-            <button
-              type="button"
-              class="orden"
-              [disabled]="ocupado()"
-              (click)="ordenar('precio')"
-            >
+            <button type="button" class="orden" [disabled]="ocupado()" (click)="ordenar('precio')">
               Precio
               {{ ordenarPor() === 'precio' ? (direccion() === 'asc' ? '↑' : '↓') : '' }}
             </button>
           </th>
 
           <th
-            [attr.aria-sort]="ordenarPor() === 'stock'
-              ? (direccion() === 'asc' ? 'ascending' : 'descending')
-              : 'none'"
+            [attr.aria-sort]="
+              ordenarPor() === 'stock'
+                ? direccion() === 'asc'
+                  ? 'ascending'
+                  : 'descending'
+                : 'none'
+            "
           >
-            <button
-              type="button"
-              class="orden"
-              [disabled]="ocupado()"
-              (click)="ordenar('stock')"
-            >
+            <button type="button" class="orden" [disabled]="ocupado()" (click)="ordenar('stock')">
               Stock
               {{ ordenarPor() === 'stock' ? (direccion() === 'asc' ? '↑' : '↓') : '' }}
             </button>
@@ -119,7 +124,9 @@
         @for (p of productos(); track p.id) {
           <tr>
             <td>{{ p.nombre }}</td>
-            <td><span class="chip">{{ p.categoriaNombre }}</span></td>
+            <td>
+              <span class="chip">{{ p.categoriaNombre }}</span>
+            </td>
             <td>{{ p.precio | currency: 'PEN' : 'S/ ' : '1.2-2' }}</td>
             <td>{{ p.stock }}</td>
             <td>
@@ -153,8 +160,7 @@
 
     <footer class="paginador">
       <span>
-        Página {{ r.pagina + 1 }} de {{ r.totalPaginas || 1 }}
-        · {{ r.totalElementos }} productos
+        Página {{ r.pagina + 1 }} de {{ r.totalPaginas || 1 }} · {{ r.totalElementos }} productos
       </span>
       <button
         type="button"
