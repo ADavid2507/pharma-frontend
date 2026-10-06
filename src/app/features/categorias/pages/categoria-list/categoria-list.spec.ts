@@ -37,6 +37,12 @@ describe('CategoriaList', () => {
     expect(fixture.nativeElement.querySelectorAll('tbody .acciones').length).toBe(0);
     http.expectNone(url);
   });
+  it('links to related products with the actual category ID', () => {
+    http.expectOne(url).flush([record]);
+    fixture.detectChanges();
+    const link = fixture.nativeElement.querySelector('a[href="/productos?categoriaId=7"]');
+    expect(link?.textContent).toContain('Ver productos');
+  });
   it('does not delete when confirmation is cancelled', () => {
     http.expectOne(url).flush([record]);
     vi.spyOn(window, 'confirm').mockReturnValue(false);

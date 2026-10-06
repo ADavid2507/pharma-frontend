@@ -52,7 +52,7 @@ export class CategoriaList implements OnInit {
 
   eliminar(categoria: Categoria): void {
     if (this.eliminando() !== null) return;
-    if (!confirm(`¿Dar de baja a la categoría "${categoria.nombre}"?`)) {
+    if (!confirm(`¿Eliminar la categoría "${categoria.nombre}"?`)) {
       return;
     }
     this.error.set(null);
@@ -60,9 +60,11 @@ export class CategoriaList implements OnInit {
     this.eliminando.set(categoria.id_categoria);
     this.categoriaService.eliminar(categoria.id_categoria).subscribe({
       next: () => {
+        this.categorias.update((lista) => 
+          lista.filter((c) => c.id_categoria !== categoria.id_categoria)
+        );
         this.eliminando.set(null);
-        this.exito.set('Categoría dada de baja correctamente.');
-        this.cargar();
+        this.exito.set('Categoría eliminada correctamente.');
       },
       error: (err: HttpErrorResponse) => {
         this.eliminando.set(null);
