@@ -1,0 +1,86 @@
+<section class="page">
+  @if (error()) {
+    <div class="alerta" role="alert">{{ error() }}</div>
+    <a routerLink="/ventas" class="btn">Volver a la consulta</a>
+  }
+  @if (cargando()) {
+    <p role="status">Cargando comprobante…</p>
+  }
+  @if (venta(); as v) {
+    @if (nueva() === '1') {
+      <div class="exito no-imprimir" role="status">Venta registrada correctamente.</div>
+    }
+    <article class="card comprobante">
+      <header class="negocio">
+        <div><strong class="marca">PharmaSoft</strong><span>Botica · Sistema de ventas</span></div>
+        <div>
+          <span>Comprobante de venta</span><strong>N.º {{ numero() }}</strong>
+        </div>
+      </header>
+      <dl class="datos">
+        <div>
+          <dt>Fecha</dt>
+          <dd>{{ v.fechaRegistro | date: 'dd/MM/yyyy HH:mm' }}</dd>
+        </div>
+        <div>
+          <dt>Cliente</dt>
+          <dd>{{ v.clienteNombre }}</dd>
+        </div>
+        @if (cliente(); as c) {
+          <div>
+            <dt>DNI</dt>
+            <dd>{{ c.dni }}</dd>
+          </div>
+        }
+        <div>
+          <dt>Estado</dt>
+          <dd>{{ v.estado }}</dd>
+        </div>
+      </dl>
+      <div class="tabla-scroll">
+        <table class="tabla">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Precio</th>
+              <th>Cantidad</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (d of v.detalles; track d.productoId) {
+              <tr>
+                <td>{{ d.productoNombre }}</td>
+                <td class="monto">{{ d.precio | currency: 'PEN' : 'S/ ' }}</td>
+                <td>{{ d.cantidad }}</td>
+                <td class="monto">{{ d.subtotal | currency: 'PEN' : 'S/ ' }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2">{{ v.detalles.length }} productos · {{ unidades() }} unidades</td>
+              <td>Total</td>
+              <td class="monto total">{{ v.total | currency: 'PEN' : 'S/ ' }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      @if (v.estado === 'ANULADA') {
+        <p class="sello" aria-hidden="true">ANULADA</p>
+      }
+      <footer class="pie solo-impresion">
+        <p>Gracias por su compra.</p>
+        <p>
+          Documento interno sin valor tributario · Impreso el
+          {{ fechaImpresion() | date: 'dd/MM/yyyy HH:mm' }}
+        </p>
+      </footer>
+      <div class="acciones no-imprimir">
+        <a routerLink="/ventas" class="btn">Volver a la consulta</a
+        ><a routerLink="/ventas/nueva" class="btn">Nueva venta</a
+        ><button class="btn btn-primary" (click)="imprimirComprobante()">Imprimir</button>
+      </div>
+    </article>
+  }
+</section>
