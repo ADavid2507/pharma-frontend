@@ -1,6 +1,7 @@
 * {
   box-sizing: border-box;
 }
+
 body {
   margin: 0;
   font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -133,5 +134,49 @@ fieldset {
   }
   .card {
     padding: 16px;
+  }
+}
+
+.solo-impresion {
+  display: none;
+}
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+  * {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  body {
+    background: #fff;
+  }
+  .no-imprimir {
+    display: none !important;
+  }
+  .solo-impresion {
+    display: block;
+  }
+  .card {
+    box-shadow: none;
+    border-radius: 0;
+    padding: 0;
+  }
+  .page {
+    padding: 0;
+    overflow: visible;
+  }
+  .tabla {
+    border-radius: 0;
+    overflow: visible;
+  }
+  .tabla th {
+    background: #fff;
+    color: #000;
+    border-bottom: 2px solid #0f2e5c;
+  }
+  .tabla tr {
+    break-inside: avoid;
   }
 }

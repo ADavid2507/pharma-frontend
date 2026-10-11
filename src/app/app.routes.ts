@@ -27,6 +27,18 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/productos/productos.routes').then((m) => m.PRODUCTOS_ROUTES),
       },
+      {
+        path: 'ventas',
+        loadChildren: () => import('./features/ventas/ventas.routes').then((m) => m.VENTAS_ROUTES),
+      },
+      {
+        path: 'reportes/ventas-por-categoria',
+        title: 'Ventas por categoría',
+        loadComponent: () =>
+          import('./features/reportes/pages/ventas-por-categoria').then(
+            (m) => m.VentasPorCategoria,
+          ),
+      }
     ],
   },
   {
