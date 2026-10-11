@@ -1,0 +1,59 @@
+<section class="page">
+  <header class="page-header">
+    <h2>Ventas por categoría</h2>
+    <button class="btn no-imprimir" [disabled]="cargando() || !filas().length" (click)="imprimir()">
+      Imprimir reporte
+    </button>
+  </header>
+  <p>Totales de ventas registradas; se excluyen las anuladas.</p>
+  <form [formGroup]="filtros" (ngSubmit)="buscar()" class="card no-imprimir">
+    <fieldset [disabled]="cargando()" class="filtros">
+      <label>Desde<input class="input" type="date" formControlName="desde" /></label
+      ><label>Hasta<input class="input" type="date" formControlName="hasta" /></label>
+      <div class="botones">
+        <button class="btn" type="button" (click)="limpiar()">Limpiar</button
+        ><button class="btn btn-primary" type="submit">Consultar</button>
+      </div>
+    </fieldset>
+  </form>
+  <p>
+    {{ resumen()
+    }}<span class="solo-impresion">Impreso el {{ ahora() | date: 'dd/MM/yyyy HH:mm' }}</span>
+  </p>
+  @if (error()) {
+    <div class="alerta" role="alert">{{ error() }}</div>
+  }
+  @if (cargando()) {
+    <p role="status">Cargando reporte…</p>
+  } @else {
+    <table class="tabla">
+      <thead>
+        <tr>
+          <th>Categoría</th>
+          <th>Unidades vendidas</th>
+          <th>Importe vendido</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (f of filas(); track f.idCategoria) {
+          <tr>
+            <td>{{ f.categoriaNombre }}</td>
+            <td>{{ f.cantidadVentas }}</td>
+            <td class="monto">{{ f.subtotalVentas | currency: 'PEN' : 'S/ ' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="3" class="vacio">No hay ventas registradas en este rango.</td>
+          </tr>
+        }
+      </tbody>
+      <tfoot>
+        <tr>
+          <td>Total</td>
+          <td>{{ unidades() }}</td>
+          <td class="monto total">{{ total() | currency: 'PEN' : 'S/ ' }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  }
+</section>

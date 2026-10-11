@@ -1,0 +1,149 @@
+.acciones,
+.botones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.resultados {
+  list-style: none;
+  padding: 4px;
+  margin: 4px 0;
+  border: 1px solid #c9d3e3;
+  border-radius: 8px;
+  background: #fff;
+}
+.resultados button {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  width: 100%;
+  padding: 10px;
+  border: 0;
+  background: none;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.resultados button:hover {
+  background: #e9f0f9;
+}
+.elegido {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  background: #e9f0f9;
+  padding: 12px;
+  border-radius: 8px;
+}
+.error {
+  display: block;
+  color: #b42318;
+  margin: 4px 0;
+}
+.dato {
+  display: block;
+  color: #64748b;
+}
+.cantidad {
+  width: 100px;
+}
+.tabla-scroll {
+  overflow-x: auto;
+}
+.monto {
+  text-align: right;
+  white-space: nowrap;
+}
+.total {
+  font-weight: 700;
+  font-size: 18px;
+}
+.confirmacion {
+  margin-top: 16px;
+  border: 2px solid #f2a900;
+}
+.vacio {
+  padding: 20px;
+  text-align: center;
+  color: #64748b;
+}
+.filtros {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 16px;
+}
+.filtros label {
+  display: grid;
+  gap: 4px;
+}
+.paginador {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+.comprobante {
+  position: relative;
+  max-width: 800px;
+  margin: auto;
+}
+.negocio {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 3px solid #f2a900;
+  padding-bottom: 16px;
+}
+.negocio div {
+  display: grid;
+  gap: 4px;
+}
+.marca {
+  font-size: 24px;
+  color: #0f2e5c;
+}
+.datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+.datos dt {
+  color: #64748b;
+  font-size: 13px;
+}
+.datos dd {
+  margin: 4px 0;
+  font-weight: 600;
+}
+.sello {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-18deg);
+  font-size: 60px;
+  font-weight: 800;
+  color: rgb(180 35 24 / 0.2);
+  pointer-events: none;
+}
+.pie {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 12px;
+}
+@media print {
+  .comprobante {
+    max-width: none;
+  }
+  .tabla-scroll {
+    overflow: visible;
+  }
+  .paginador {
+    justify-content: flex-start;
+  }
+}
