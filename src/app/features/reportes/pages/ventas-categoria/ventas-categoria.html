@@ -12,7 +12,7 @@
       ><label>Hasta<input class="input" type="date" formControlName="hasta" /></label>
       <div class="botones">
         <button class="btn" type="button" (click)="limpiar()">Limpiar</button
-        ><button class="btn btn-primary" type="submit">Consultar</button>
+        ><button class="btn btn-primary" type="submit">Generar</button>
       </div>
     </fieldset>
   </form>
@@ -35,15 +35,20 @@
         </tr>
       </thead>
       <tbody>
-        @for (f of filas(); track f.idCategoria) {
+        @for (f of filas(); track f.categoriaId) {
           <tr>
-            <td>{{ f.categoriaNombre }}</td>
-            <td>{{ f.cantidadVentas }}</td>
-            <td class="monto">{{ f.subtotalVentas | currency: 'PEN' : 'S/ ' }}</td>
+            <td>
+              {{ f.categoriaNombre }}
+              <div class="barra-fondo" aria-hidden="true">
+                <div class="barra" [style.width.%]="porcentaje(f.montoTotal)"></div>
+              </div>
+            </td>
+            <td>{{ f.cantidadVendida }}</td>
+            <td class="monto">{{ f.montoTotal | currency: 'PEN' : 'S/ ' }}</td>
           </tr>
         } @empty {
           <tr>
-            <td colspan="3" class="vacio">No hay ventas registradas en este rango.</td>
+            <td colspan="3" class="vacio">No hay ventas en el periodo seleccionado</td>
           </tr>
         }
       </tbody>
