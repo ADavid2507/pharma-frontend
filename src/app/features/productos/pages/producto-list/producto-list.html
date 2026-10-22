@@ -1,7 +1,9 @@
 <section class="page">
   <header class="page-header">
     <h2>Productos</h2>
-    <a routerLink="nuevo" class="btn btn-primary">+ Nuevo producto</a>
+    <a *appSiPermiso="'CATALOGO_ESCRIBIR'" routerLink="nuevo" class="btn btn-primary"
+      >+ Nuevo producto</a
+    >
   </header>
 
   <div class="filtros">
@@ -14,10 +16,14 @@
       >
         <option value="" [selected]="categoriaFiltro() === null">Todas</option>
         @if (categoriaFiltro() !== null && !categoriaDisponible()) {
-          <option [value]="categoriaFiltro()" [selected]="true">{{ nombreCategoria() }} (no disponible)</option>
+          <option [value]="categoriaFiltro()" [selected]="true">
+            {{ nombreCategoria() }} (no disponible)
+          </option>
         }
         @for (c of categorias(); track c.id_categoria) {
-          <option [value]="c.id_categoria" [selected]="categoriaFiltro() === c.id_categoria">{{ c.nombre }}</option>
+          <option [value]="c.id_categoria" [selected]="categoriaFiltro() === c.id_categoria">
+            {{ c.nombre }}
+          </option>
         }
       </select>
     </label>
@@ -116,7 +122,7 @@
           </th>
 
           <th>Estado</th>
-          <th>Acciones</th>
+          <th *appSiPermiso="'CATALOGO_ESCRIBIR'">Acciones</th>
         </tr>
       </thead>
 
@@ -134,7 +140,7 @@
                 {{ p.estado ? 'Activo' : 'Inactivo' }}
               </span>
             </td>
-            <td>
+            <td *appSiPermiso="'CATALOGO_ESCRIBIR'">
               <div class="acciones">
                 <a [routerLink]="[p.id, 'editar']" class="btn">Editar</a>
                 <button

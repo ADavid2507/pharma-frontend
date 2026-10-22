@@ -3,15 +3,16 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ReporteService, VentaPorCategoria } from '../services/reporte-service';
-import { mensajeError } from '../../../core/utils/http-error';
-import { redondear } from '../../../core/utils/numeros';
+import { ReporteService } from '../../services/reporte-service';
+import { VentaPorCategoria } from '../../models/reporte.model';
+import { mensajeError } from '../../../../core/utils/http-error';
+import { redondear } from '../../../../core/utils/numeros';
 
 @Component({
   selector: 'app-ventas-por-categoria',
   imports: [ReactiveFormsModule, CurrencyPipe, DatePipe],
-  templateUrl: './ventas-por-categoria.html',
-  styleUrl: '../../ventas/pages/ventas.css',
+  templateUrl: './ventas-categoria.html',
+  styleUrls: ['../../../ventas/pages/ventas.css', './ventas-categoria.css'],
 })
 export class VentasPorCategoria implements OnInit {
   private readonly servicio = inject(ReporteService);
@@ -26,10 +27,15 @@ export class VentasPorCategoria implements OnInit {
   readonly error = signal<string | null>(null);
   readonly resumen = signal('Histórico completo');
   readonly ahora = signal(new Date());
-  readonly total = computed(() =>
-    redondear(this.filas().reduce((s, f) => s + f.subtotalVentas, 0)),
+  readonly total = computed(() => redondear(this.filas().reduce((s, f) => s + f.montoTotal, 0)));
+  readonly unidades = computed(() => this.filas().reduce((s, f) => s + f.cantidadVendida, 0));
+  readonly montoMaximo = computed(() =>
+    Math.max(0, ...this.filas().map((fila) => fila.montoTotal)),
   );
-  readonly unidades = computed(() => this.filas().reduce((s, f) => s + f.cantidadVentas, 0));
+  porcentaje(monto: number): number {
+    const maximo = this.montoMaximo();
+    return maximo > 0 ? Math.min(100, Math.max(0, (monto / maximo) * 100)) : 0;
+  }
   ngOnInit() {
     this.buscar();
   }

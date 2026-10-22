@@ -1,3 +1,4 @@
+import { SiPermiso } from '../../../../shared/directives/si-permiso';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CurrencyPipe, DatePipe } from '@angular/common';
@@ -15,7 +16,7 @@ import { VentaService } from '../../services/venta-service';
 
 @Component({
   selector: 'app-venta-list',
-  imports: [ReactiveFormsModule, RouterLink, CurrencyPipe, DatePipe],
+  imports: [SiPermiso, ReactiveFormsModule, RouterLink, CurrencyPipe, DatePipe],
   templateUrl: './venta-list.html',
   styleUrl: '../ventas.css',
 })
