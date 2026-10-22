@@ -1,10 +1,18 @@
-import { RouterLink } from '@angular/router';
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
-  imports: [RouterLink],
   selector: 'app-acceso-denegado',
-  styleUrl: './acceso-denegado.css',
-  templateUrl: './acceso-denegado.html',
+  imports: [RouterLink],
+  template: `
+    <section class="card">
+      <h2>403 · Acceso denegado</h2>
+      <p>
+        Su usuario no tiene permiso para abrir esta página. Si lo necesita, solicítelo al
+        administrador.
+      </p>
+      <a routerLink="/inicio" class="btn btn-primary">Volver al inicio</a>
+    </section>
+  `,
 })
 export class AccesoDenegado {}

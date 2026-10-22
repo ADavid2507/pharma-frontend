@@ -6,7 +6,7 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { AuthService } from '../auth/auth-service';
-import { permisoGuardGuard } from './permiso-guard-guard';
+import { permisoGuard } from './permiso-guard';
 describe('Guard de permisos', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
@@ -19,7 +19,7 @@ describe('Guard de permisos', () => {
   it('autoriza lectura y rechaza escritura sin cerrar sesión', () => {
     for (const permiso of ['CATALOGO_LEER', 'CATALOGO_ESCRIBIR']) {
       const result = TestBed.runInInjectionContext(() =>
-        permisoGuardGuard(
+        permisoGuard(
           { data: { permiso } } as unknown as ActivatedRouteSnapshot,
           {} as RouterStateSnapshot,
         ),

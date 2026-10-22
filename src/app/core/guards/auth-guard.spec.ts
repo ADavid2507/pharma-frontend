@@ -6,18 +6,21 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { AuthService } from '../auth/auth-service';
-import { authGuardGuard, invitadoGuard } from './auth-guard-guard';
+import { authGuard, invitadoGuard } from './auth-guard';
 describe('Guards de sesión', () => {
   let token: string | null;
   beforeEach(() => {
     token = null;
     TestBed.configureTestingModule({
-      providers: [provideRouter([]), { provide: AuthService, useValue: { token: () => token } }],
+      providers: [
+        provideRouter([]),
+        { provide: AuthService, useValue: { autenticado: () => token !== null } },
+      ],
     });
   });
   it('recuerda la ruta solicitada al exigir login', () => {
     const result = TestBed.runInInjectionContext(() =>
-      authGuardGuard({} as ActivatedRouteSnapshot, { url: '/ventas' } as RouterStateSnapshot),
+      authGuard({} as ActivatedRouteSnapshot, { url: '/ventas' } as RouterStateSnapshot),
     );
     expect(TestBed.inject(Router).serializeUrl(result as any)).toBe('/login?returnUrl=%2Fventas');
   });
@@ -25,7 +28,7 @@ describe('Guards de sesión', () => {
     token = 'vigente';
     expect(
       TestBed.runInInjectionContext(() =>
-        authGuardGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot),
+        authGuard({} as ActivatedRouteSnapshot, {} as RouterStateSnapshot),
       ),
     ).toBe(true);
     const result = TestBed.runInInjectionContext(() =>

@@ -1,26 +1,22 @@
-import { permisoGuardGuard } from '../../core/guards/permiso-guard-guard';
 import { Routes } from '@angular/router';
+import { permisoGuard } from '../../core/guards/permiso-guard';
 import { ProductoList } from './pages/producto-list/producto-list';
 import { ProductoForm } from './pages/producto-form/producto-form';
 
 export const PRODUCTOS_ROUTES: Routes = [
-  {
-    path: '',
-    component: ProductoList,
-    title: 'Productos',
-  },
+  { path: '', component: ProductoList, title: 'Productos' },
   {
     path: 'nuevo',
-    canActivate: [permisoGuardGuard],
-    data: { permiso: 'CATALOGO_ESCRIBIR' },
     component: ProductoForm,
-    title: 'Nuevo Producto',
+    title: 'Nuevo producto',
+    canActivate: [permisoGuard],
+    data: { permiso: 'CATALOGO_ESCRIBIR' },
   },
   {
     path: ':id/editar',
-    canActivate: [permisoGuardGuard],
-    data: { permiso: 'CATALOGO_ESCRIBIR' },
     component: ProductoForm,
-    title: 'Editar Producto',
+    title: 'Editar producto',
+    canActivate: [permisoGuard],
+    data: { permiso: 'CATALOGO_ESCRIBIR' },
   },
 ];

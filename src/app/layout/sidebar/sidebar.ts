@@ -1,7 +1,7 @@
-import { AuthService } from '../../core/auth/auth-service';
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { MENU } from '../../core/config/menu';
+import { AuthService } from '../../core/auth/auth-service';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,7 +11,9 @@ import { MENU } from '../../core/config/menu';
 })
 export class Sidebar {
   private readonly auth = inject(AuthService);
+
+  /** Solo las opciones que el usuario puede abrir. Se recalcula si cambia la sesión. */
   protected readonly menu = computed(() =>
-    MENU.filter((i) => !i.permiso || this.auth.tienePermiso(i.permiso)),
+    MENU.filter((item) => !item.permiso || this.auth.tienePermiso(item.permiso)),
   );
 }

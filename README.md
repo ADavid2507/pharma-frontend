@@ -69,7 +69,7 @@ No es necesario repetir `git init`: el proyecto ya tiene repositorio. Conviene s
 Implementada en `feature/seguridad-frontend-asmat`, conservando la rama existente y el backend.
 
 - Login reactivo con validación y mensaje genérico ante credenciales inválidas o cuenta inactiva.
-- Sesión en signal y `sessionStorage` (`pharmasoft.sesion`), recuperación al recargar, descarte de datos dañados, temporizador de expiración y aviso un minuto antes.
+- Sesión en signal y `sessionStorage` (`pharmasoft.sesion`), recuperación al recargar, descarte de datos dañados, temporizador de expiración.
 - Bearer solo para la API configurada, excluyendo el login. Un 401 de la API cierra la sesión; 403 conserva la sesión y llega al componente.
 - Guards de sesión y permiso para lectura y escritura; retorno a rutas internas tras el login.
 - Menú y acciones por permisos, incluidos Clientes y Reportes. Encabezado con nombre, roles, vencimiento y cierre de sesión.

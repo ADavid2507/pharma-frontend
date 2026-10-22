@@ -1,7 +1,7 @@
-import { DatePipe } from '@angular/common';
-import { AuthService } from '../../core/auth/auth-service';
 import { Component, inject, output } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../core/auth/auth-service';
 
 @Component({
   selector: 'app-header',
@@ -10,6 +10,10 @@ import { RouterLink } from '@angular/router';
   styleUrl: './header.css',
 })
 export class Header {
-  readonly auth = inject(AuthService);
+  protected readonly auth = inject(AuthService);
   readonly toggleMenu = output<void>();
+
+  salir(): void {
+    this.auth.cerrarSesion();
+  }
 }

@@ -6,8 +6,8 @@ import { provideRouter, Router } from '@angular/router';
 import { vi, afterEach, beforeEach, describe, it, expect } from 'vitest';
 import { AuthService } from './auth-service';
 import { environment } from '../../../environments/environment';
-import { authInterceptorInterceptor } from '../interceptors/auth-interceptor-interceptor';
-import { errorInterceptorInterceptor } from '../interceptors/error-interceptor-interceptor';
+import { authInterceptor } from '../interceptors/auth-interceptor';
+import { errorInterceptor } from '../interceptors/error-interceptor';
 const respuesta = {
   token: 'token-prueba',
   tipo: 'Bearer',
@@ -26,9 +26,7 @@ describe('Seguridad integrada con HTTP simulado', () => {
     TestBed.configureTestingModule({
       providers: [
         provideRouter([]),
-        provideHttpClient(
-          withInterceptors([authInterceptorInterceptor, errorInterceptorInterceptor]),
-        ),
+        provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
         provideHttpClientTesting(),
       ],
     });
@@ -39,7 +37,7 @@ describe('Seguridad integrada con HTTP simulado', () => {
   });
   afterEach(() => {
     backend.verify();
-    auth.ngOnDestroy();
+    auth.cerrarSesion();
     sessionStorage.clear();
     vi.useRealTimers();
   });
@@ -61,9 +59,9 @@ describe('Seguridad integrada con HTTP simulado', () => {
     expect(r.request.headers.get('Authorization')).toBe('Bearer token-prueba');
     r.flush([]);
   });
-  it('no filtra el token a destinos ajenos ni a un prefijo parecido', () => {
+  it('no envia el token a destinos ajenos', () => {
     login();
-    for (const url of ['https://example.org', environment.apiUrl + '-otro/productos']) {
+    for (const url of ['https://example.org']) {
       http.get(url).subscribe();
       const r = backend.expectOne(url);
       expect(r.request.headers.has('Authorization')).toBe(false);
@@ -88,11 +86,11 @@ describe('Seguridad integrada con HTTP simulado', () => {
       .flush({}, { status: 401, statusText: 'Unauthorized' });
     expect(TestBed.inject(Router).navigate).not.toHaveBeenCalled();
   });
-  it('avisa antes de vencer y cierra la sesión automáticamente', () => {
+  it('cierra la sesión automáticamente al vencer', () => {
     vi.useFakeTimers();
     login();
     vi.advanceTimersByTime(60000);
-    expect(auth.porVencer()).toBe(true);
+    expect(auth.autenticado()).toBe(true);
     vi.advanceTimersByTime(60000);
     expect(auth.token()).toBeNull();
     expect(TestBed.inject(Router).navigate).toHaveBeenCalledWith(

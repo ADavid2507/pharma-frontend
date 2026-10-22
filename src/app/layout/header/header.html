@@ -14,12 +14,11 @@
   </nav>
   @if (auth.sesion(); as s) {
     <div class="usuario">
-      <a routerLink="/mi-cuenta">{{ s.nombreCompleto }}</a
-      ><small>{{ s.roles.join(' · ') }} · expira {{ s.expiraEn | date: 'HH:mm:ss' }}</small>
+      <span class="nombre">{{ s.nombreCompleto }}</span>
+      <span class="detalle"
+        >{{ s.roles.join(' · ') }} · expira {{ s.expiraEn | date: 'HH:mm' }}</span
+      >
     </div>
-    <button type="button" (click)="auth.cerrarSesion()">Cerrar sesión</button>
-  }
-  @if (auth.porVencer()) {
-    <span role="status">Su sesión vencerá en menos de un minuto. Guarde su trabajo.</span>
+    <button type="button" class="btn-salir" (click)="salir()">Cerrar sesión</button>
   }
 </header>
