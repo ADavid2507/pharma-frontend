@@ -1,3 +1,4 @@
+import { SiPermiso } from '../../../../shared/directives/si-permiso';
 import {
   Component,
   computed,
@@ -24,7 +25,7 @@ import { ProductoService } from '../../services/producto-service';
 
 @Component({
   selector: 'app-producto-list',
-  imports: [RouterLink, CurrencyPipe],
+  imports: [SiPermiso, RouterLink, CurrencyPipe],
   templateUrl: './producto-list.html',
   styleUrl: './producto-list.css',
 })

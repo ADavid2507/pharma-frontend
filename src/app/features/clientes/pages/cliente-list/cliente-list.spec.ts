@@ -1,3 +1,4 @@
+import { AuthService } from '../../../../core/auth/auth-service';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
@@ -25,7 +26,7 @@ describe('ClienteList', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ClienteList],
-      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
+      providers: [{ provide: AuthService, useValue: { tienePermiso: () => true } },provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
     });
     http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(ClienteList);

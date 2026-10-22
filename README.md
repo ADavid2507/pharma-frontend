@@ -63,3 +63,27 @@ Cada servicio concentra GET colección, GET por ID, POST, PUT por ID y DELETE po
 4. Crear la rama solicitada por el docente, registrar al menos cuatro commits y publicar en tu repositorio. No hay remoto Git configurado; no se han creado commits ni publicado cambios.
 
 No es necesario repetir `git init`: el proyecto ya tiene repositorio. Conviene separar commits de configuración/layout, Categorías, Clientes y pruebas/documentación. Agregar explícitamente archivos nuevos antes de cada commit.
+
+## Sesión 11: seguridad frontend (22/10/2026)
+
+Implementada en `feature/seguridad-frontend-asmat`, conservando la rama existente y el backend.
+
+- Login reactivo con validación y mensaje genérico ante credenciales inválidas o cuenta inactiva.
+- Sesión en signal y `sessionStorage` (`pharmasoft.sesion`), recuperación al recargar, descarte de datos dañados, temporizador de expiración.
+- Bearer solo para la API configurada, excluyendo el login. Un 401 de la API cierra la sesión; 403 conserva la sesión y llega al componente.
+- Guards de sesión y permiso para lectura y escritura; retorno a rutas internas tras el login.
+- Menú y acciones por permisos, incluidos Clientes y Reportes. Encabezado con nombre, roles, vencimiento y cierre de sesión.
+- `/mi-cuenta`: nombre, usuario, roles, permisos y expiración; nunca muestra el token.
+
+Verificación: compilación de producción correcta y 84 pruebas aprobadas (29 archivos). HTTP y el reloj se simulan en las pruebas de seguridad. También se comprobó la API local con los cinco usuarios de la guía y se probaron los flujos de navegación en el navegador.
+
+Informe: `output/pdf/Asmat_LP2_S11_Practica.pdf`. Capturas: `output/evidencias-s11`. El informe tiene 12 capturas de los casos de la guía y una de Mi cuenta. Faltan las evidencias manuales de los casos 6, 7, 15 y 16; el PDF explica cómo obtenerlas. Completar los datos del estudiante antes de entregar. Los apartados anteriores corresponden a sesiones previas.
+
+Si el entorno de Windows causa ENOENT en el directorio temporal del ejecutor de pruebas:
+
+```powershell
+New-Item -ItemType Directory -Force .tmp | Out-Null
+$env:TEMP=(Resolve-Path .tmp).Path
+$env:TMP=$env:TEMP
+node node_modules/@angular/cli/bin/ng.js test --watch=false
+```
