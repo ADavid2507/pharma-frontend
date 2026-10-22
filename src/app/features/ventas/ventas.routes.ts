@@ -1,3 +1,4 @@
+import { permisoGuardGuard } from '../../core/guards/permiso-guard-guard';
 import { Routes } from '@angular/router';
 export const VENTAS_ROUTES: Routes = [
   {
@@ -7,6 +8,8 @@ export const VENTAS_ROUTES: Routes = [
   },
   {
     path: 'nueva',
+    canActivate: [permisoGuardGuard],
+    data: { permiso: 'VENTAS_REGISTRAR' },
     title: 'Nueva venta',
     loadComponent: () => import('./pages/venta-form/venta-form').then((m) => m.VentaForm),
   },
