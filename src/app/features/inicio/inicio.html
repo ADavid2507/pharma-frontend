@@ -1,6 +1,8 @@
 <section class="card">
   <h2>Bienvenido a PharmaSoft</h2>
   <p>Seleccione un módulo en el menú lateral para comenzar.</p>
-  <a routerLink="/categorias" class="btn btn-primary">Ir a Categorías</a>
-  <a routerLink="/clientes" class="btn">Ir a Clientes</a>
+  <a *appSiPermiso="'CATALOGO_LEER'" routerLink="/categorias" class="btn btn-primary"
+    >Ir a Categorías</a
+  >
+  <a *appSiPermiso="'CLIENTES_LEER'" routerLink="/clientes" class="btn">Ir a Clientes</a>
 </section>

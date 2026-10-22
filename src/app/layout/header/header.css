@@ -40,3 +40,17 @@
   font-size: 14px;
   opacity: 0.85;
 }
+
+.header {
+  min-height: 64px;
+  height: auto;
+  flex-wrap: wrap;
+  padding-block: 12px;
+}
+.usuario {
+  display: flex;
+  flex-direction: column;
+}
+.usuario a {
+  color: white;
+}

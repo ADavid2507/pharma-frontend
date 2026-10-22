@@ -7,7 +7,7 @@
   }
   <header class="page-header">
     <h2>Clientes</h2>
-    <a routerLink="nuevo" class="btn btn-primary">+ Nuevo cliente</a>
+    <a *appSiPermiso="'CLIENTES_ESCRIBIR'" routerLink="nuevo" class="btn btn-primary">+ Nuevo cliente</a>
   </header>
   <input
     class="input buscador"
@@ -51,7 +51,7 @@
           <th>Correo</th>
           <th>Teléfono</th>
           <th>Estado</th>
-          <th>Acciones</th>
+          <th *appSiPermiso="'CLIENTES_ESCRIBIR'">Acciones</th>
         </tr>
       </thead>
       <tbody>
@@ -66,7 +66,7 @@
                 c.estado ? 'Activo' : 'Inactivo'
               }}</span>
             </td>
-            <td class="acciones">
+            <td *appSiPermiso="'CLIENTES_ESCRIBIR'" class="acciones">
               <a [routerLink]="[c.id, 'editar']" class="btn">Editar</a
               ><button
                 type="button"
