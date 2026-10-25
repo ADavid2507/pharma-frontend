@@ -1,0 +1,58 @@
+<section class="page">
+  <header class="page-header">
+    <h1>Mi cuenta</h1>
+    <button type="button" class="btn" (click)="cargar()" [disabled]="cargando()">
+      Actualizar datos
+    </button>
+  </header>
+  @if (cargando()) {
+    <p role="status">Cargando datos de su cuenta…</p>
+  }
+  @if (error()) {
+    <div class="alerta" role="alert">{{ error() }}</div>
+    <button type="button" class="btn" (click)="cargar()">Reintentar</button>
+  }
+  @if (perfil(); as usuario) {
+    @if (permisosCambiaron()) {
+      <p class="aviso" role="status">
+        Sus permisos cambiaron. Cierre sesión y vuelva a ingresar para actualizarlos.
+      </p>
+    }
+    <div class="card">
+      <h2>{{ usuario.nombreCompleto }}</h2>
+      <p>
+        Usuario: <strong>{{ usuario.username }}</strong>
+      </p>
+      <h3>Roles</h3>
+      <div class="roles">
+        @for (rol of usuario.roles; track rol) {
+          <span class="badge">{{ rol }}</span>
+        } @empty {
+          <p>No tiene roles asignados.</p>
+        }
+      </div>
+      <h3>Permisos por módulo</h3>
+      <div class="grupos">
+        @for (grupo of grupos; track grupo.modulo) {
+          <section>
+            <h4>{{ grupo.modulo }}</h4>
+            <ul>
+              @for (permiso of grupo.permisos; track permiso.codigo) {
+                <li>
+                  <span aria-hidden="true">{{
+                    usuario.permisos.includes(permiso.codigo) ? '✔' : '✘'
+                  }}</span>
+                  {{ permiso.etiqueta }}
+                  <span class="estado">{{
+                    usuario.permisos.includes(permiso.codigo) ? 'Permitido' : 'No permitido'
+                  }}</span>
+                </li>
+              }
+            </ul>
+          </section>
+        }
+      </div>
+      <button type="button" class="btn" (click)="salir()">Cerrar sesión</button>
+    </div>
+  }
+</section>

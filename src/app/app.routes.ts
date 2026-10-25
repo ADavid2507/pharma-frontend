@@ -17,6 +17,11 @@ export const routes: Routes = [
     canActivate: [authGuard],
     canActivateChild: [authGuard],
     children: [
+      {
+        path: 'mi-cuenta',
+        title: 'Mi cuenta',
+        loadComponent: () => import('./features/auth/pages/mi-cuenta').then((m) => m.MiCuenta),
+      },
       { path: '', pathMatch: 'full', redirectTo: 'inicio' },
       {
         path: 'inicio',
@@ -36,6 +41,20 @@ export const routes: Routes = [
         data: { permiso: 'CATALOGO_LEER' },
         loadChildren: () =>
           import('./features/productos/productos.routes').then((m) => m.PRODUCTOS_ROUTES),
+      },
+      {
+        path: 'clientes',
+        canActivate: [permisoGuard],
+        data: { permiso: 'CLIENTES_LEER' },
+        loadChildren: () =>
+          import('./features/clientes/clientes.routes').then((m) => m.CLIENTES_ROUTES),
+      },
+      {
+        path: 'reportes',
+        canActivate: [permisoGuard],
+        data: { permiso: 'REPORTES_VER' },
+        loadChildren: () =>
+          import('./features/reportes/reportes.routes').then((m) => m.REPORTES_ROUTES),
       },
       {
         path: 'ventas',

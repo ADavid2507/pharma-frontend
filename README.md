@@ -87,3 +87,19 @@ $env:TEMP=(Resolve-Path .tmp).Path
 $env:TMP=$env:TEMP
 node node_modules/@angular/cli/bin/ng.js test --watch=false
 ```
+
+## Actividad autónoma de la sesión 11
+
+Rama: `feature/seguridad-spa-pruebas-asmat`.
+
+- `AuthService` conserva la sesión de la práctica y añade `segundosRestantes`, `porVencer`, `obtenerPerfil()` y ocultación del aviso por sesión. El intervalo actualiza la cuenta cada segundo; cerrar sesión o destruir el servicio cancela el intervalo y el temporizador de expiración.
+- `shared/components/aviso-sesion` aparece durante los últimos 120 segundos, muestra mm:ss y permite ocultar el aviso o cerrar sesión. Está encima del RouterOutlet en MainLayout; la sesión nunca se renueva desde el navegador.
+- `/mi-cuenta` usa la protección del layout para cualquier usuario autenticado, sin permiso adicional. Consulta GET `/api/v1/auth/me`, presenta carga, error y reintento, roles como etiquetas y permisos agrupados por módulo. Si el conjunto de permisos del servidor difiere del de la sesión, pide volver a ingresar sin sobrescribir la sesión actual.
+- El backend local usa `empleadoNombre` en `/auth/me`; `obtenerPerfil()` lo convierte al `nombreCompleto` utilizado en la pantalla. También acepta el nombre del contrato de la guía.
+- El login ignora un segundo envío mientras está procesando el primero, además de deshabilitar el botón.
+
+La matriz editable está en `docs/matriz-seguridad-spa-s11.md`: 16 casos base, cuatro propios de grupos distintos y B-01 a B-04. Los resultados manuales y sus capturas deben registrarse al ejecutarlos; las pruebas automatizadas no sustituyen la evidencia de navegador.
+
+Para comprobar el aviso manualmente, configurar temporalmente `app.jwt.expiracion-minutos: 3` en PharmaBackend, reiniciarlo e iniciar una sesión nueva. El aviso aparece cuando quedan dos minutos, aproximadamente un minuto después del login. Probar ocultación, navegación y cierre; al terminar restaurar 60 minutos y reiniciar. No se ha cambiado esa configuración desde esta actividad.
+
+La entrega aún requiere el informe C1-C3 en `docs/informe-s11.pdf`, las capturas sin tokens completos y tres commits en días distintos con fechas reales, además del PR hacia develop. Los archivos de evidencia de la práctica anterior son históricos y deben revisarse antes de publicarlos.
