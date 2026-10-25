@@ -15,6 +15,7 @@
   @if (auth.sesion(); as s) {
     <div class="usuario">
       <span class="nombre">{{ s.nombreCompleto }}</span>
+      <a routerLink="/mi-cuenta" class="enlace-cuenta">Mi cuenta</a>
       <span class="detalle"
         >{{ s.roles.join(' · ') }} · expira {{ s.expiraEn | date: 'HH:mm' }}</span
       >

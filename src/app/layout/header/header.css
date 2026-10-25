@@ -64,3 +64,8 @@
 .btn-salir:hover {
   background: rgb(255 255 255 / 0.12);
 }
+
+.enlace-cuenta {
+  color: #cadcfc;
+  font-size: 12px;
+}

@@ -1,0 +1,30 @@
+:host {
+  display: block;
+}
+.aviso-sesion {
+  position: fixed;
+  top: 76px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  box-sizing: border-box;
+  padding: 10px 16px;
+  border: 1px solid #e8bd58;
+  border-radius: 8px;
+  background: #fff6dc;
+  color: #7a5200;
+  box-shadow: 0 2px 8px #0002;
+}
+.cerrar {
+  background: none;
+  border: 0;
+  font-size: 24px;
+  cursor: pointer;
+  color: inherit;
+}
