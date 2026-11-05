@@ -1,3 +1,4 @@
+import { ConfirmacionService } from '../../../../shared/components/confirmacion/confirmacion-service';
 import { SiPermiso } from '../../../../shared/directives/si-permiso';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -14,6 +15,7 @@ import { mensajeError } from '../../../../core/utils/http-error';
   styleUrl: './categoria-list.css',
 })
 export class CategoriaList implements OnInit {
+  private readonly confirmacion = inject(ConfirmacionService);
   private readonly categoriaService = inject(CategoriaService);
 
   protected readonly categorias = signal<Categoria[]>([]);
@@ -53,24 +55,30 @@ export class CategoriaList implements OnInit {
 
   eliminar(categoria: Categoria): void {
     if (this.eliminando() !== null) return;
-    if (!confirm(`¿Eliminar la categoría "${categoria.nombre}"?`)) {
-      return;
-    }
-    this.error.set(null);
-    this.exito.set(null);
-    this.eliminando.set(categoria.id_categoria);
-    this.categoriaService.eliminar(categoria.id_categoria).subscribe({
-      next: () => {
-        this.categorias.update((lista) => 
-          lista.filter((c) => c.id_categoria !== categoria.id_categoria)
-        );
-        this.eliminando.set(null);
-        this.exito.set('Categoría eliminada correctamente.');
+    this.confirmacion.solicitar(
+      {
+        titulo: 'Eliminar categoría',
+        mensaje: `¿Eliminar la categoría "${categoria.nombre}"?`,
+        textoConfirmar: 'Eliminar',
       },
-      error: (err: HttpErrorResponse) => {
-        this.eliminando.set(null);
-        this.error.set(mensajeError(err));
+      () => {
+        this.error.set(null);
+        this.exito.set(null);
+        this.eliminando.set(categoria.id_categoria);
+        this.categoriaService.eliminar(categoria.id_categoria).subscribe({
+          next: () => {
+            this.categorias.update((lista) =>
+              lista.filter((c) => c.id_categoria !== categoria.id_categoria),
+            );
+            this.eliminando.set(null);
+            this.exito.set('Categoría eliminada correctamente.');
+          },
+          error: (err: HttpErrorResponse) => {
+            this.eliminando.set(null);
+            this.error.set(mensajeError(err));
+          },
+        });
       },
-    });
+    );
   }
 }

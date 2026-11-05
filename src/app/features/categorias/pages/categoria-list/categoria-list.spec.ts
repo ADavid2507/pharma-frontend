@@ -1,3 +1,4 @@
+import { ConfirmacionService } from '../../../../shared/components/confirmacion/confirmacion-service';
 import { AuthService } from '../../../../core/auth/auth-service';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -18,7 +19,12 @@ describe('CategoriaList', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [CategoriaList],
-      providers: [{ provide: AuthService, useValue: { tienePermiso: () => true } },provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        { provide: AuthService, useValue: { tienePermiso: () => true } },
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     });
     http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(CategoriaList);
@@ -46,14 +52,16 @@ describe('CategoriaList', () => {
   });
   it('does not delete when confirmation is cancelled', () => {
     http.expectOne(url).flush([record]);
-    vi.spyOn(window, 'confirm').mockReturnValue(false);
     fixture.componentInstance.eliminar(record);
+    http.expectNone(`${url}/7`);
+    TestBed.inject(ConfirmacionService).responder(false);
     http.expectNone(`${url}/7`);
   });
   it('removes the row after a 204 response without reloading', () => {
     http.expectOne(url).flush([record]);
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
     fixture.componentInstance.eliminar(record);
+    http.expectNone(`${url}/7`);
+    TestBed.inject(ConfirmacionService).responder(true);
     http
       .expectOne({ url: `${url}/7`, method: 'DELETE' })
       .flush(null, { status: 204, statusText: 'No Content' });
@@ -63,8 +71,9 @@ describe('CategoriaList', () => {
   });
   it('keeps the row when deletion conflicts', () => {
     http.expectOne(url).flush([record]);
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
     fixture.componentInstance.eliminar(record);
+    http.expectNone(`${url}/7`);
+    TestBed.inject(ConfirmacionService).responder(true);
     http
       .expectOne(`${url}/7`)
       .flush({ message: 'Tiene registros asociados' }, { status: 409, statusText: 'Conflict' });

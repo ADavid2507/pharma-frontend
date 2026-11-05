@@ -1,3 +1,4 @@
+import { ConfirmacionService } from '../../../../shared/components/confirmacion/confirmacion-service';
 import { SiPermiso } from '../../../../shared/directives/si-permiso';
 import {
   Component,
@@ -32,6 +33,7 @@ import { ProductoService } from '../../services/producto-service';
 export class ProductoList implements OnInit, OnChanges, OnDestroy {
   readonly categoriaId = input<string>();
   private peticionListado?: Subscription;
+  private readonly confirmacion = inject(ConfirmacionService);
   private readonly productoService = inject(ProductoService);
   private readonly categoriaService = inject(CategoriaService);
 
@@ -176,22 +178,27 @@ export class ProductoList implements OnInit, OnChanges, OnDestroy {
   darDeBaja(producto: Producto): void {
     if (this.ocupado() || !producto.estado) return;
 
-    if (!confirm(`¿Dar de baja al producto "${producto.nombre}"?`)) {
-      return;
-    }
-
-    this.error.set(null);
-    this.dandoDeBaja.set(producto.id);
-
-    this.productoService.darDeBaja(producto.id).subscribe({
-      next: () => {
-        this.dandoDeBaja.set(null);
-        this.cargar();
+    this.confirmacion.solicitar(
+      {
+        titulo: 'Dar de baja al producto',
+        mensaje: `¿Dar de baja al producto "${producto.nombre}"?`,
+        textoConfirmar: 'Dar de baja',
       },
-      error: (err: HttpErrorResponse) => {
-        this.dandoDeBaja.set(null);
-        this.error.set(mensajeError(err));
+      () => {
+        this.error.set(null);
+        this.dandoDeBaja.set(producto.id);
+
+        this.productoService.darDeBaja(producto.id).subscribe({
+          next: () => {
+            this.dandoDeBaja.set(null);
+            this.cargar();
+          },
+          error: (err: HttpErrorResponse) => {
+            this.dandoDeBaja.set(null);
+            this.error.set(mensajeError(err));
+          },
+        });
       },
-    });
+    );
   }
 }
