@@ -1,3 +1,4 @@
+import { ConfirmacionService } from '../../../../shared/components/confirmacion/confirmacion-service';
 import { SiPermiso } from '../../../../shared/directives/si-permiso';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -14,6 +15,7 @@ import { mensajeError } from '../../../../core/utils/http-error';
   styleUrl: './cliente-list.css',
 })
 export class ClienteList implements OnInit {
+  private readonly confirmacion = inject(ConfirmacionService);
   private readonly clienteService = inject(ClienteService);
 
   protected readonly clientes = signal<Cliente[]>([]);
@@ -69,23 +71,29 @@ export class ClienteList implements OnInit {
 
   eliminar(cliente: Cliente): void {
     if (this.eliminando() !== null) return;
-    if (!confirm(`¿Dar de baja al cliente "${cliente.nombres} ${cliente.apellidos}"?`)) {
-      return;
-    }
-    this.error.set(null);
-    this.exito.set(null);
-    this.eliminando.set(cliente.id);
-    this.clienteService.eliminar(cliente.id).subscribe({
-      next: () => {
-        this.eliminando.set(null);
-        this.exito.set('Cliente dado de baja correctamente.');
-        this.cargar();
+    this.confirmacion.solicitar(
+      {
+        titulo: 'Dar de baja al cliente',
+        mensaje: `¿Dar de baja al cliente "${cliente.nombres} ${cliente.apellidos}"?`,
+        textoConfirmar: 'Dar de baja',
       },
-      error: (err: HttpErrorResponse) => {
-        this.eliminando.set(null);
-        this.error.set(mensajeError(err));
+      () => {
+        this.error.set(null);
+        this.exito.set(null);
+        this.eliminando.set(cliente.id);
+        this.clienteService.eliminar(cliente.id).subscribe({
+          next: () => {
+            this.eliminando.set(null);
+            this.exito.set('Cliente dado de baja correctamente.');
+            this.cargar();
+          },
+          error: (err: HttpErrorResponse) => {
+            this.eliminando.set(null);
+            this.error.set(mensajeError(err));
+          },
+        });
       },
-    });
+    );
   }
 
   cambiarPagina(paso: number): void {
