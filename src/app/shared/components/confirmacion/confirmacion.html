@@ -1,0 +1,20 @@
+<dialog
+  #dialogo
+  aria-labelledby="confirmacion-titulo"
+  aria-describedby="confirmacion-mensaje"
+  (cancel)="$event.preventDefault(); responder(false)"
+>
+  @if (confirmacion.opciones(); as opciones) {
+    <div class="icono" aria-hidden="true">!</div>
+    <h2 id="confirmacion-titulo">{{ opciones.titulo ?? 'Confirmar acción' }}</h2>
+    <p id="confirmacion-mensaje">{{ opciones.mensaje }}</p>
+    <div class="acciones">
+      <button type="button" class="btn" autofocus (click)="responder(false)">
+        {{ opciones.textoCancelar ?? 'Cancelar' }}
+      </button>
+      <button type="button" class="btn confirmar" (click)="responder(true)">
+        {{ opciones.textoConfirmar ?? 'Confirmar' }}
+      </button>
+    </div>
+  }
+</dialog>

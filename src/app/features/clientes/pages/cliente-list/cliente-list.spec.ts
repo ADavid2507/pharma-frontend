@@ -1,3 +1,4 @@
+import { ConfirmacionService } from '../../../../shared/components/confirmacion/confirmacion-service';
 import { AuthService } from '../../../../core/auth/auth-service';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
@@ -26,7 +27,12 @@ describe('ClienteList', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ClienteList],
-      providers: [{ provide: AuthService, useValue: { tienePermiso: () => true } },provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        { provide: AuthService, useValue: { tienePermiso: () => true } },
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ],
     });
     http = TestBed.inject(HttpTestingController);
     fixture = TestBed.createComponent(ClienteList);
@@ -66,8 +72,9 @@ describe('ClienteList', () => {
         totalPaginas: 1,
         ultima: true,
       });
-    vi.spyOn(window, 'confirm').mockReturnValue(false);
     fixture.componentInstance.eliminar(record);
+    http.expectNone(`${url}/7`);
+    TestBed.inject(ConfirmacionService).responder(false);
     http.expectNone(`${url}/7`);
   });
   it('reloads and keeps the inactive row after a 204 response', () => {
@@ -81,8 +88,9 @@ describe('ClienteList', () => {
         totalPaginas: 1,
         ultima: true,
       });
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
     fixture.componentInstance.eliminar(record);
+    http.expectNone(`${url}/7`);
+    TestBed.inject(ConfirmacionService).responder(true);
     http
       .expectOne({ url: `${url}/7`, method: 'DELETE' })
       .flush(null, { status: 204, statusText: 'No Content' });
@@ -112,8 +120,9 @@ describe('ClienteList', () => {
         totalPaginas: 1,
         ultima: true,
       });
-    vi.spyOn(window, 'confirm').mockReturnValue(true);
     fixture.componentInstance.eliminar(record);
+    http.expectNone(`${url}/7`);
+    TestBed.inject(ConfirmacionService).responder(true);
     http
       .expectOne(`${url}/7`)
       .flush({ message: 'Tiene registros asociados' }, { status: 409, statusText: 'Conflict' });
