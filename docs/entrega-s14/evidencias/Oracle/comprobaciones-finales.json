@@ -1,0 +1,36 @@
+{
+  "total_productos": 15015,
+  "total_ventas": 40028,
+  "total_clientes": 7,
+  "producto_id": 26,
+  "producto_nombre": "Paracetamol 500 mg",
+  "stock_antes_suite": 19,
+  "stock_despues_suite": 13,
+  "descuento_observado": 6,
+  "eventos_venta_recientes": [
+    {
+      "id": 21,
+      "entidadId": 40144,
+      "usuario": "vendedor",
+      "requestId": "bfd9de88",
+      "detalle": "total=6 | items=1"
+    },
+    {
+      "id": 13,
+      "entidadId": 40143,
+      "usuario": "vendedor",
+      "requestId": "627aecdc",
+      "detalle": "total=6 | items=1"
+    },
+    {
+      "id": 5,
+      "entidadId": 40142,
+      "usuario": "vendedor",
+      "requestId": "d4340724",
+      "detalle": "total=6 | items=1"
+    }
+  ],
+  "total_login_fallido_admin": 3,
+  "auditoria_sin_token_http": 401,
+  "auditoria_vendedor_http": 403
+}

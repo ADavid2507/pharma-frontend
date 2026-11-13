@@ -7,6 +7,7 @@ export interface DetalleVenta {
   subtotal: number;
 }
 export interface Venta {
+  creadoPor?: string | null;
   id: number;
   fechaRegistro: string;
   clienteId: number;
