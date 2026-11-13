@@ -1,0 +1,87 @@
+{
+  "entorno": "Oracle y backend dev en 8080",
+  "fecha": "2026-11-12T10:15:46.214836-05:00",
+  "mediciones": [
+    {
+      "ruta": "/productos?pagina=0&tamanio=20",
+      "http": 200,
+      "ms_cliente": 46.2,
+      "bytes_cuerpo": 5103,
+      "requestId": "68c45e4c",
+      "pagina": 0,
+      "tamanio": 20,
+      "totalElementos": 15015,
+      "totalPaginas": 751,
+      "ultima": false
+    },
+    {
+      "ruta": "/productos?pagina=0&tamanio=100",
+      "http": 200,
+      "ms_cliente": 127.01,
+      "bytes_cuerpo": 24883,
+      "requestId": "1081b3cd",
+      "pagina": 0,
+      "tamanio": 100,
+      "totalElementos": 15015,
+      "totalPaginas": 151,
+      "ultima": false
+    },
+    {
+      "ruta": "/productos?pagina=0&tamanio=500",
+      "http": 409,
+      "ms_cliente": 43.69,
+      "bytes_cuerpo": 225,
+      "requestId": "711d695a"
+    },
+    {
+      "ruta": "/auditoria?pagina=0&tamanio=20",
+      "http": 200,
+      "ms_cliente": 77.07,
+      "bytes_cuerpo": 253,
+      "requestId": "2ba1da62",
+      "pagina": 0,
+      "tamanio": 20,
+      "totalElementos": 1,
+      "totalPaginas": 1,
+      "ultima": true
+    },
+    {
+      "ruta": "/ventas/buscar?desde=2026-11-01&hasta=2026-11-12&pagina=0&tamanio=20",
+      "http": 200,
+      "ms_cliente": 84.68,
+      "bytes_cuerpo": 3848,
+      "requestId": "075bb9c9",
+      "pagina": 0,
+      "tamanio": 20,
+      "totalElementos": 1294,
+      "totalPaginas": 65,
+      "ultima": false
+    },
+    {
+      "ruta": "/productos?pagina=750&tamanio=20",
+      "http": 200,
+      "ms_cliente": 43.87,
+      "bytes_cuerpo": 3910,
+      "filas": 15,
+      "pagina": 750,
+      "totalElementos": 15015
+    }
+  ],
+  "producto_e2e": {
+    "id": 26,
+    "nombre": "Paracetamol 500 mg",
+    "stock_antes": 19
+  },
+  "health": {
+    "status": "UP",
+    "componentes": {
+      "db": "UP",
+      "diskSpace": "UP",
+      "livenessState": "UP",
+      "ping": "UP",
+      "readinessState": "UP",
+      "redis": "UP",
+      "ssl": "UP"
+    }
+  }
+}
