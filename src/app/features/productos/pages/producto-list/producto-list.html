@@ -27,21 +27,6 @@
         }
       </select>
     </label>
-
-    <label>
-      Por página
-      <select
-        class="input"
-        [value]="tamanio()"
-        [disabled]="ocupado()"
-        (change)="cambiarTamanio($any($event.target).value)"
-      >
-        <option value="5">5</option>
-        <option value="10">10</option>
-        <option value="20">20</option>
-        <option value="100">100</option>
-      </select>
-    </label>
   </div>
 
   @if (avisoRuta()) {
@@ -70,8 +55,9 @@
 
   @if (cargando()) {
     <p role="status">Cargando productos…</p>
-  } @else if (resultado(); as r) {
-    <table class="tabla">
+  }
+  @if (resultado(); as r) {
+    <table class="tabla" data-testid="tabla-productos">
       <thead>
         <tr>
           <th
@@ -164,26 +150,15 @@
       </tbody>
     </table>
 
-    <footer class="paginador">
-      <span>
-        Página {{ r.pagina + 1 }} de {{ r.totalPaginas || 1 }} · {{ r.totalElementos }} productos
-      </span>
-      <button
-        type="button"
-        class="btn"
-        [disabled]="ocupado() || r.pagina === 0"
-        (click)="irA(r.pagina - 1)"
-      >
-        Anterior
-      </button>
-      <button
-        type="button"
-        class="btn btn-primary"
-        [disabled]="ocupado() || r.ultima"
-        (click)="irA(r.pagina + 1)"
-      >
-        Siguiente
-      </button>
-    </footer>
+    <app-paginador
+      [pagina]="r.pagina"
+      [totalPaginas]="r.totalPaginas"
+      [totalElementos]="r.totalElementos"
+      [tamanio]="r.tamanio"
+      [tamanios]="[5, 10, 20, 50, 100]"
+      [deshabilitado]="ocupado()"
+      (cambioPagina)="irA($event)"
+      (cambioTamanio)="cambiarTamanio('' + $event)"
+    />
   }
 </section>

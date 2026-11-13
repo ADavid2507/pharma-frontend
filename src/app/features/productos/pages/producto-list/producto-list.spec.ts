@@ -36,7 +36,7 @@ describe('ProductoList', () => {
 
     expect(peticion.request.method).toBe('GET');
     expect(peticion.request.params.get('pagina')).toBe('0');
-    expect(peticion.request.params.get('tamanio')).toBe('10');
+    expect(peticion.request.params.get('tamanio')).toBe('20');
     expect(peticion.request.params.get('ordenarPor')).toBe('nombre');
     expect(peticion.request.params.get('direccion')).toBe('asc');
 
@@ -130,7 +130,7 @@ describe('ProductoList desde Categorías', () => {
     expect(harness.routeNativeElement?.querySelector('tbody')?.textContent).toContain('Producto B');
     await harness.navigateByUrl('/productos', ProductoList);
     harness.detectChanges();
-    expect(listar).toHaveBeenLastCalledWith(0, 10, 'nombre', 'asc');
+    expect(listar).toHaveBeenLastCalledWith(0, 20, 'nombre', 'asc');
     expect(harness.routeNativeElement?.querySelector('select')?.value).toBe('');
   });
 
@@ -138,7 +138,7 @@ describe('ProductoList desde Categorías', () => {
     const harness = await RouterTestingHarness.create();
     await harness.navigateByUrl('/productos?categoriaId=abc', ProductoList);
     harness.detectChanges();
-    expect(listar).toHaveBeenCalledWith(0, 10, 'nombre', 'asc');
+    expect(listar).toHaveBeenCalledWith(0, 20, 'nombre', 'asc');
     expect(harness.routeNativeElement?.textContent).toContain(
       'El identificador de categoría no es válido',
     );
@@ -148,6 +148,7 @@ describe('ProductoList desde Categorías', () => {
     const harness = await RouterTestingHarness.create();
     const component = await harness.navigateByUrl('/productos?categoriaId=7', ProductoList);
     component.cambiarTamanio('5');
+    await harness.fixture.whenStable();
     harness.detectChanges();
     expect(harness.routeNativeElement?.textContent).not.toContain('en los primeros 100 registros');
     const requests = listar.mock.calls.length;
@@ -155,5 +156,28 @@ describe('ProductoList desde Categorías', () => {
     harness.detectChanges();
     expect(listar.mock.calls.length).toBe(requests);
     expect(harness.routeNativeElement?.querySelector('tbody')?.textContent).toContain('Producto B');
+  });
+  it('restaura pagina y orden desde URL y reinicia al cambiar tamanio', async () => {
+    const harness = await RouterTestingHarness.create();
+    const component = await harness.navigateByUrl(
+      '/productos?pagina=3&tamanio=50&orden=precio&dir=desc',
+      ProductoList,
+    );
+    expect(listar).toHaveBeenLastCalledWith(3, 50, 'precio', 'desc');
+    component.cambiarTamanio('20');
+    await harness.fixture.whenStable();
+    expect(listar).toHaveBeenLastCalledWith(0, 20, 'precio', 'desc');
+    const { Router } = await import('@angular/router');
+    expect(TestBed.inject(Router).url).toContain('pagina=0');
+    expect(TestBed.inject(Router).url).toContain('tamanio=20');
+  });
+
+  it('normaliza pagina, tamanio y orden manipulados en URL', async () => {
+    const harness = await RouterTestingHarness.create();
+    await harness.navigateByUrl(
+      '/productos?pagina=-1&tamanio=500&orden=secreto&dir=otra',
+      ProductoList,
+    );
+    expect(listar).toHaveBeenLastCalledWith(0, 20, 'nombre', 'asc');
   });
 });
