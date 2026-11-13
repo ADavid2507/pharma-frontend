@@ -1,10 +1,12 @@
+import { Paginador } from '../../../../shared/components/paginador/paginador';
+import { Subscription } from 'rxjs';
 import { SiPermiso } from '../../../../shared/directives/si-permiso';
 import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NonNullableFormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PaginaResponse } from '../../../../core/models/pagina-response';
 import { mensajeError } from '../../../../core/utils/http-error';
 import { cargarPaginas } from '../../../../core/utils/cargar-paginas';
@@ -16,11 +18,15 @@ import { VentaService } from '../../services/venta-service';
 
 @Component({
   selector: 'app-venta-list',
-  imports: [SiPermiso, ReactiveFormsModule, RouterLink, CurrencyPipe, DatePipe],
+  imports: [SiPermiso, ReactiveFormsModule, RouterLink, CurrencyPipe, DatePipe, Paginador],
   templateUrl: './venta-list.html',
   styleUrl: '../ventas.css',
 })
 export class VentaList implements OnInit {
+  private readonly ruta = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private peticion?: Subscription;
+  readonly tamanio = signal(20);
   private readonly fb = inject(NonNullableFormBuilder);
   private readonly ventas = inject(VentaService);
   private readonly clienteService = inject(ClienteService);
@@ -71,7 +77,30 @@ export class VentaList implements OnInit {
         next: (c) => this.clientes.set(c),
         error: (e: HttpErrorResponse) => this.errorClientes.set(mensajeError(e)),
       });
-    this.cargar(0);
+    this.ruta.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((q) => {
+      const numero = (v: string | null, defecto: number) =>
+        v !== null && /^\d+$/.test(v) && Number.isSafeInteger(Number(v)) ? Number(v) : defecto;
+      const estado = q.get('estado');
+      const fecha = (v: string | null) => (v && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null);
+      const filtros: FiltroVentas = {
+        clienteId: numero(q.get('clienteId'), 0) || null,
+        estado: estado === 'REGISTRADA' || estado === 'ANULADA' ? estado : null,
+        desde: fecha(q.get('desde')),
+        hasta: fecha(q.get('hasta')),
+      };
+      this.aplicados.set(filtros);
+      this.filtros.patchValue(filtros);
+      const t = numero(q.get('tamanio'), 20);
+      this.tamanio.set([10, 20, 50, 100].includes(t) ? t : 20);
+      if (filtros.desde && filtros.hasta && filtros.desde > filtros.hasta) {
+        this.peticion?.unsubscribe();
+        this.cargando.set(false);
+        this.resultado.set(null);
+        this.error.set('La fecha «desde» no puede ser posterior a la fecha «hasta».');
+        return;
+      }
+      this.cargar(numero(q.get('pagina'), 0));
+    });
   }
   buscar() {
     if (this.cargando()) return;
@@ -80,8 +109,7 @@ export class VentaList implements OnInit {
       this.error.set('La fecha «desde» no puede ser posterior a la fecha «hasta».');
       return;
     }
-    this.aplicados.set(f);
-    this.cargar(0);
+    this.navegar({ ...f, pagina: 0 });
   }
   limpiar() {
     if (!this.cargando()) {
@@ -91,14 +119,25 @@ export class VentaList implements OnInit {
   }
   irA(pagina: number) {
     if (!this.cargando() && pagina >= 0 && pagina < (this.resultado()?.totalPaginas ?? 0))
-      this.cargar(pagina);
+      this.navegar({ pagina });
+  }
+  cambiarTamanio(tamanio: number) {
+    if (!this.cargando() && [10, 20, 50, 100].includes(tamanio))
+      this.navegar({ tamanio, pagina: 0 });
+  }
+  private navegar(cambios: Record<string, string | number | null>) {
+    void this.router.navigate([], {
+      relativeTo: this.ruta,
+      queryParams: cambios,
+      queryParamsHandling: 'merge',
+    });
   }
   private cargar(pagina: number) {
+    this.peticion?.unsubscribe();
     this.cargando.set(true);
     this.error.set(null);
-    this.resultado.set(null);
-    this.ventas
-      .buscar(this.aplicados(), pagina, 10)
+    this.peticion = this.ventas
+      .buscar(this.aplicados(), pagina, this.tamanio())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (r) => {

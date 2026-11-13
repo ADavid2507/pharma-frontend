@@ -1,0 +1,7 @@
+{
+  "antes_url": "http://localhost:4200/ventas?pagina=4&tamanio=20",
+  "antes_pagina": "Página 5 de 2002",
+  "despues_url": "http://localhost:4200/ventas?pagina=0&tamanio=20&desde=2026-11-01&hasta=2026-11-12",
+  "despues_pagina": "Página 1 de 65",
+  "entorno": "Oracle y Redis en localhost:8080, SPA localhost:4200"
+}

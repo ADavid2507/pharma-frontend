@@ -8,6 +8,8 @@ export interface ClienteRequest {
   estado: boolean;
 }
 export interface Cliente extends ClienteRequest {
+  creadoPor?: string | null;
+  modificadoPor?: string | null;
   id: number;
   fechaCreacion: string;
   fechaModificacion: string | null;

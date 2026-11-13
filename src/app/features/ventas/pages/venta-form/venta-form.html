@@ -22,6 +22,7 @@
           <label for="buscar-cliente">Buscar por nombre, apellido o DNI</label>
           <input
             id="buscar-cliente"
+            data-testid="buscar-cliente"
             class="input"
             type="search"
             [formControl]="buscarCliente"
@@ -32,7 +33,7 @@
             <ul class="resultados">
               @for (c of clientesEncontrados(); track c.id) {
                 <li>
-                  <button type="button" (click)="elegirCliente(c)">
+                  <button type="button" data-testid="opcion-cliente" (click)="elegirCliente(c)">
                     <strong>{{ c.apellidos }}, {{ c.nombres }}</strong
                     ><span>DNI {{ c.dni }}</span>
                   </button>
@@ -50,6 +51,7 @@
         <label for="buscar-producto">Buscar por nombre o categoría</label>
         <input
           id="buscar-producto"
+          data-testid="buscar-producto"
           class="input"
           type="search"
           [formControl]="buscarProducto"
@@ -60,7 +62,12 @@
           <ul class="resultados">
             @for (p of productosEncontrados(); track p.id) {
               <li>
-                <button type="button" (click)="agregarProducto(p)">
+                <button
+                  type="button"
+                  data-testid="opcion-producto"
+                  [attr.data-stock]="p.stock"
+                  (click)="agregarProducto(p)"
+                >
                   <strong>{{ p.nombre }}</strong
                   ><span>{{ p.categoriaNombre }}</span
                   ><span>{{ p.precio | currency: 'PEN' : 'S/ ' }} · Stock {{ p.stock }}</span>
@@ -104,6 +111,7 @@
                       min="1"
                       step="1"
                       formControlName="cantidad"
+                      data-testid="cantidad"
                       [attr.aria-label]="'Cantidad de ' + lineas()[i].producto?.nombre"
                     />
                     @if (linea.controls.cantidad.invalid && linea.controls.cantidad.touched) {
@@ -136,7 +144,9 @@
             <tfoot>
               <tr>
                 <td colspan="3">Total estimado</td>
-                <td class="monto total">{{ total() | currency: 'PEN' : 'S/ ' }}</td>
+                <td class="monto total" data-testid="total-venta">
+                  {{ total() | currency: 'PEN' : 'S/ ' }}
+                </td>
                 <td></td>
               </tr>
             </tfoot>

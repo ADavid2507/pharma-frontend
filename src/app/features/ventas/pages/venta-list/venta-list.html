@@ -8,7 +8,9 @@
         (click)="imprimirConsulta()"
       >
         Imprimir consulta</button
-      ><a *appSiPermiso="'VENTAS_REGISTRAR'" routerLink="nueva" class="btn btn-primary">+ Nueva venta</a>
+      ><a *appSiPermiso="'VENTAS_REGISTRAR'" routerLink="nueva" class="btn btn-primary"
+        >+ Nueva venta</a
+      >
     </div>
   </header>
   <p class="solo-impresion">
@@ -49,7 +51,8 @@
   }
   @if (cargando()) {
     <p role="status">Buscando ventas…</p>
-  } @else if (resultado(); as r) {
+  }
+  @if (resultado(); as r) {
     <div class="tabla-scroll">
       <table class="tabla">
         <thead>
@@ -93,18 +96,19 @@
         </tbody>
       </table>
     </div>
-    <footer class="paginador">
-      <span
-        >Total registrado en la página (sin anuladas):
-        {{ totalPagina() | currency: 'PEN' : 'S/ ' }}</span
-      ><span
-        >Página {{ r.pagina + 1 }} de {{ r.totalPaginas || 1 }} ·
-        {{ r.totalElementos }} ventas</span
-      ><button class="btn no-imprimir" [disabled]="r.pagina === 0" (click)="irA(r.pagina - 1)">
-        Anterior</button
-      ><button class="btn no-imprimir" [disabled]="r.ultima" (click)="irA(r.pagina + 1)">
-        Siguiente
-      </button>
-    </footer>
+    <p>
+      Total registrado en la página (sin anuladas): {{ totalPagina() | currency: 'PEN' : 'S/ ' }}
+    </p>
+    <div class="no-imprimir">
+      <app-paginador
+        [pagina]="r.pagina"
+        [totalPaginas]="r.totalPaginas"
+        [totalElementos]="r.totalElementos"
+        [tamanio]="r.tamanio"
+        [deshabilitado]="cargando()"
+        (cambioPagina)="irA($event)"
+        (cambioTamanio)="cambiarTamanio($event)"
+      />
+    </div>
   }
 </section>
