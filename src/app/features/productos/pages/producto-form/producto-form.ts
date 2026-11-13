@@ -24,6 +24,7 @@ export class ProductoForm implements OnInit {
   private readonly router = inject(Router);
 
   readonly id = input<string>();
+  protected readonly modificadoPor = signal<string | null>(null);
 
   protected readonly categorias = signal<Categoria[]>([]);
   protected readonly categoriaOriginal = signal<number | null>(null);
@@ -34,46 +35,29 @@ export class ProductoForm implements OnInit {
   protected readonly erroresServidor = signal<Record<string, string>>({});
 
   protected readonly form = this.fb.group({
-    nombre: ['', [
-      Validators.required,
-      Validators.minLength(3),
-      Validators.maxLength(150),
-    ]],
-    precio: this.fb.control<number | null>(null, [
-      Validators.required,
-      Validators.min(0.01),
-    ]),
+    nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(150)]],
+    precio: this.fb.control<number | null>(null, [Validators.required, Validators.min(0.01)]),
     stock: this.fb.control<number | null>(0, [
       Validators.required,
       Validators.min(0),
       Validators.pattern(/^\d+$/),
     ]),
     estado: [true],
-    categoriaId: this.fb.control<number | null>(null, [
-      Validators.required,
-      Validators.min(1),
-    ]),
+    categoriaId: this.fb.control<number | null>(null, [Validators.required, Validators.min(1)]),
   });
 
-  private readonly categoriaElegida = toSignal(
-    this.form.controls.categoriaId.valueChanges,
-    { initialValue: null },
-  );
+  private readonly categoriaElegida = toSignal(this.form.controls.categoriaId.valueChanges, {
+    initialValue: null,
+  });
 
   protected readonly opciones = computed(() =>
-    this.categorias().filter(
-      (c) => c.estado || c.id_categoria === this.categoriaOriginal(),
-    ),
+    this.categorias().filter((c) => c.estado || c.id_categoria === this.categoriaOriginal()),
   );
 
-  protected readonly hayCategoriasActivas = computed(() =>
-    this.categorias().some((c) => c.estado),
-  );
+  protected readonly hayCategoriasActivas = computed(() => this.categorias().some((c) => c.estado));
 
   protected readonly categoriaInactiva = computed(() => {
-    const categoria = this.categorias().find(
-      (c) => c.id_categoria === this.categoriaElegida(),
-    );
+    const categoria = this.categorias().find((c) => c.id_categoria === this.categoriaElegida());
     return !!categoria && !categoria.estado;
   });
 
@@ -96,6 +80,7 @@ export class ProductoForm implements OnInit {
         producto: this.productoService.obtener(Number(id)),
       }).subscribe({
         next: ({ categorias, producto }) => {
+          this.modificadoPor.set(producto.modificadoPor ?? producto.creadoPor ?? null);
           this.categorias.set(categorias);
           this.categoriaOriginal.set(producto.categoriaId);
 
@@ -129,9 +114,7 @@ export class ProductoForm implements OnInit {
 
     this.error.set(null);
     this.erroresServidor.set({});
-    this.form.controls.nombre.setValue(
-      this.form.controls.nombre.value.trim(),
-    );
+    this.form.controls.nombre.setValue(this.form.controls.nombre.value.trim());
 
     if (this.form.invalid) {
       this.form.markAllAsTouched();
@@ -139,9 +122,7 @@ export class ProductoForm implements OnInit {
     }
 
     const valores = this.form.getRawValue();
-    const categoria = this.categorias().find(
-      (c) => c.id_categoria === valores.categoriaId,
-    );
+    const categoria = this.categorias().find((c) => c.id_categoria === valores.categoriaId);
 
     if (!categoria || !categoria.estado) {
       this.error.set('Seleccione una categoría activa.');

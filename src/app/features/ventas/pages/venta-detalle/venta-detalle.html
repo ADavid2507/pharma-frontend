@@ -18,6 +18,12 @@
         </div>
       </header>
       <dl class="datos">
+        @if (v.creadoPor) {
+          <div>
+            <dt>Vendedor</dt>
+            <dd>{{ v.creadoPor }}</dd>
+          </div>
+        }
         <div>
           <dt>Fecha</dt>
           <dd>{{ v.fechaRegistro | date: 'dd/MM/yyyy HH:mm' }}</dd>
