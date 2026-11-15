@@ -66,4 +66,12 @@ test('flujo principal: registra una venta y el catalogo refleja el stock', async
       }),
     ]),
   );
+  await page.getByRole('button', { name: 'Cerrar sesión', exact: true }).click();
+  await iniciarSesion(page, 'admin', '/auditoria?accion=VENTA_REGISTRADA');
+  const evento = page
+    .getByTestId('tabla-auditoria')
+    .locator('tbody tr')
+    .filter({ has: page.getByRole('cell', { name: String(venta.id), exact: true }) });
+  await expect(evento).toHaveCount(1);
+  await expect(evento).toContainText(requestId!);
 });
