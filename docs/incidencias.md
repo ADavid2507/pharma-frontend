@@ -13,3 +13,7 @@ La suite del paso 9 tiene siete pruebas y se ejecuta sin reintentos. El formular
 Verificacion del 12/11/2026: 114 pruebas Angular aprobadas; backend 59 aprobadas y 5 de Redis omitidas; Playwright Chromium 21/21 (7 pruebas x 3, cero reintentos) contra el entorno H2 aislado. La migracion Oracle y el flujo con Redis real quedan pendientes de comprobar en desarrollo.
 
 Verificacion posterior en Oracle y Redis: 21/21 en Chromium, cero reintentos, tres ventas autorizadas (40142, 40143 y 40144), producto 26 con stock 19 a 13. API: Productos 20/100 HTTP 200, tamaño 500 HTTP 409; auditoria admin 200, vendedor 403 y sin token 401. I-08 comprobado en navegador: pagina=4 a pagina=0 al aplicar fechas. Reportes y mediciones en docs/entrega-s14/evidencias/Oracle. Los hashes de Git siguen pendientes.
+
+## Actividad autónoma S14
+
+El registro actualizado de seis incidencias, con causas, reproducción, commits conocidos y regresiones, está en [docs/incidencias.md del backend](https://github.com/ADavid2507/PharmaDB/blob/feature/integracion-estabilizacion-asmat/docs/incidencias.md). La nueva revisión suma 14 escenarios E2E y conserva la evidencia histórica de esta práctica. Los cambios nuevos quedan sin commit a cargo del estudiante.
